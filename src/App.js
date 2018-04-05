@@ -15,14 +15,29 @@ class App extends Component {
     sortAscending: true
   }
 
-  handleSort(e) {
-    console.log(e.target.id)
+  handleHeadingClick(field) {
+    const { sortAscending, sortBy } = this.state
+    const newSortAscending = sortBy === field ? !sortAscending : true
     this.setState({
-      sortBy: e.target.id
+      sortBy: field,
+      sortAscending: newSortAscending
+    })
+  }
+
+  sortedListings() {
+    const { listings, sortBy, sortAscending } = this.state
+    return [...listings].sort((a, b) => {
+      if(a[sortBy] < b[sortBy] && sortAscending) return -1
+      if(a[sortBy] > b[sortBy] && !sortAscending) return -1
+      if(a[sortBy] > b[sortBy] && sortAscending) return 1
+      if(a[sortBy] < b[sortBy] && !sortAscending) return 1
+      return 0
     })
   }
 
   render() {
+    console.log(this.state)
+    const { headings } = this.state
     return (
       <div className="App">
         <Container>
@@ -31,29 +46,31 @@ class App extends Component {
             {/* table headers */}
             <thead>
               <tr>
-                {this.state.headings.map((cat) => {
-                  return <th onClick={this.handleSort.bind(this)} id={cat.field} key={cat.field}>{cat.label}</th>
+                {headings.map((h, index) => {
+                  return (
+                    <th key={index} onClick={this.handleHeadingClick.bind(this, h.field)}>
+                      {h.label}
+                    </th>
+                  )
                 })}
               </tr>
             </thead>
 
             {/* table rows */}
             <tbody>
-              
-                {this.state.listings.map((listings) => {
-                  return (
-                    <tr key={listings._id}>
-                      <td>{listings._id}</td> 
-                      <td>{listings.address}</td>
-                      <td>{listings.city}</td>
-                      <td>{listings.homeType}</td>
-                      <td>{listings.bedrooms}</td>
-                      <td>{listings.bathrooms}</td>
-                      <td>{listings.floorType}</td>
-                      <td>{listings.rent}</td>
+              {this.sortedListings().map((l) => {
+                return (
+                  <tr key={l._id}>
+                    {Object.keys(l).map((field, index) => {
+                      return (
+                        <td key={index}>
+                          {l[field]}
+                        </td>
+                      )
+                    })}
                   </tr>
-                  )
-                })}
+                )
+              })}
             </tbody>
           </Table>
         </Container>
