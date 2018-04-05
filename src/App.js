@@ -15,6 +15,13 @@ class App extends Component {
     sortAscending: true
   }
 
+  handleSort(e) {
+    console.log(e.target.id)
+    this.setState({
+      sortBy: e.target.id
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -24,39 +31,29 @@ class App extends Component {
             {/* table headers */}
             <thead>
               <tr>
-                <th>Heading 1 <span>&darr;</span></th>
-                <th>Heading 2 <span>&uarr;</span></th>
-                <th>Heading 3</th>
-                <th>Heading 4</th>
-                <th>Heading 5</th>
+                {this.state.headings.map((cat) => {
+                  return <th onClick={this.handleSort.bind(this)} id={cat.field} key={cat.field}>{cat.label}</th>
+                })}
               </tr>
             </thead>
 
             {/* table rows */}
             <tbody>
-              <tr>
-                <td>Lorem ipsum</td>
-                <td>2</td>
-                <td>Dolor sit amet</td>
-                <td>21</td>
-                <td>342</td>
-              </tr>
-
-              <tr>
-                <td>Lorem ipsum</td>
-                <td>2</td>
-                <td>Dolor sit amet</td>
-                <td>21</td>
-                <td>342</td>
-              </tr>
-
-              <tr>
-                <td>Lorem ipsum</td>
-                <td>2</td>
-                <td>Dolor sit amet</td>
-                <td>21</td>
-                <td>342</td>
-              </tr>
+              
+                {this.state.listings.map((listings) => {
+                  return (
+                    <tr key={listings._id}>
+                      <td>{listings._id}</td> 
+                      <td>{listings.address}</td>
+                      <td>{listings.city}</td>
+                      <td>{listings.homeType}</td>
+                      <td>{listings.bedrooms}</td>
+                      <td>{listings.bathrooms}</td>
+                      <td>{listings.floorType}</td>
+                      <td>{listings.rent}</td>
+                  </tr>
+                  )
+                })}
             </tbody>
           </Table>
         </Container>
